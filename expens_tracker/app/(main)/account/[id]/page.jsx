@@ -3,6 +3,7 @@ import { BarLoader } from "react-spinners";
 import { notFound } from "next/navigation";
 import TransactionsTable from "../_components/transaction-table";
 import React, { Suspense } from "react";
+import { AccountChart } from "../_components/account-chart";
 
 export default async function AccountPage({ params }) {
   // Next.js 15: params ko await karo
@@ -36,7 +37,12 @@ export default async function AccountPage({ params }) {
           </p>
         </div>
       </div>
-
+            {/* Chart Section */}
+      <Suspense
+        fallback={<BarLoader className="mt-4" width={"100%"} color="#9333ea" />}
+      >
+        <AccountChart transactions={transactions} />
+      </Suspense>
       {/* Transactions Table */}
       <Suspense fallback={<BarLoader className="mt-4" width={"100%"} color="#9333ea" />}>
         <TransactionsTable transactions={transactions} />
