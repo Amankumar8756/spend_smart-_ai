@@ -100,7 +100,7 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
             ) : (
               <>
                 <CardDescription>
-                  ${currentExpenses.toFixed(2)} of ${budgetAmount.toFixed(2)} spent
+                  ${currentExpenses.toFixed(1)} of ${budgetAmount.toFixed(1)} spent
                 </CardDescription>
                 <Button
                   variant="ghost"
@@ -119,7 +119,7 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
         <div className="space-y-2">
           <Progress value={percentUsed} />
           <p className="text-xs text-muted-foreground text-right">
-            {percentUsed.toFixed(2)}% used
+            {percentUsed.toFixed(1)}% used
           </p>
         </div>
       </CardContent>

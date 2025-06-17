@@ -19,14 +19,18 @@ export default async function DashboardPage() {
   if (defaultAccount) {
     budgetData = await getCurrentBudget(defaultAccount.id);
   }
-
+  console.log(budgetData)
   return (
     <div className="space-y-8">
       {/* Budget Progress */}
-     <BudgetProgress
-  initialBudget={{ amount: 2000 }}
-  currentExpenses={3000}
-/>
+     {/* <BudgetProgress
+  initialBudget={{ amount: 200 }}
+  currentExpenses={300}
+/> */}
+<BudgetProgress
+        initialBudget={budgetData?.budget}
+        currentExpenses={budgetData?.currentExpenses || 0}
+      />
       {/* Dashboard Overview */}
      
 
