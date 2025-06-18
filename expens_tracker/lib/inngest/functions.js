@@ -2,7 +2,8 @@
 import { db } from "../prisma";
 
 import { inngest } from "./client";
-
+import EmailTemplate from "@/emails/template";
+import { sendEmail } from "@/actions/send-email";
 
 // 3. Budget Alerts with Event Batching
 export const checkBudgetAlerts = inngest.createFunction(
@@ -61,25 +62,25 @@ export const checkBudgetAlerts = inngest.createFunction(
 
         // Check if we should send an alert
         if (
-          percentageUsed >= 50 && // Default threshold of 80%
+          percentageUsed >= 80 && // Default threshold of 80%
           (!budget.lastAlertSent ||
             isNewMonth(new Date(budget.lastAlertSent), new Date()))
         ) {
           console.log("YES")
-          // await sendEmail({
-          //   to: budget.user.email,
-          //   subject: `Budget Alert for ${defaultAccount.name}`,
-          //   react: EmailTemplate({
-          //     userName: budget.user.name,
-          //     type: "budget-alert",
-          //     data: {
-          //       percentageUsed,
-          //       budgetAmount: parseInt(budgetAmount).toFixed(1),
-          //       totalExpenses: parseInt(totalExpenses).toFixed(1),
-          //       accountName: defaultAccount.name,
-          //     },
-          //   }),
-          // });
+          await sendEmail({
+            to: budget.user.email,
+            subject: `Budget Alert for ${defaultAccount.name}`,
+            react: EmailTemplate({
+              userName: budget.user.name,
+              type: "budget-alert",
+              data: {
+                percentageUsed,
+                budgetAmount: parseInt(budgetAmount).toFixed(1),
+                totalExpenses: parseInt(totalExpenses).toFixed(1),
+                accountName: defaultAccount.name,
+              },
+            }),
+          });
 
           // Update last alert sent
           await db.budget.update({
