@@ -100,7 +100,7 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
             ) : (
               <>
                 <CardDescription>
-                  ${currentExpenses.toFixed(1)} of ${budgetAmount.toFixed(1)} spent
+                  ${currentExpenses.toFixed(2)} of ${budgetAmount.toFixed(2)} spent
                 </CardDescription>
                 <Button
                   variant="ghost"
