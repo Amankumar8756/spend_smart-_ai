@@ -9,13 +9,35 @@ import {
   Text,
 } from "@react-email/components";
 
-export default function EmailTemplate({
-  userName = "",
-  type = "monthly-report",
-  data = {
-    month: "",
-    stats: { totalIncome: 0, totalExpenses: 0, byCategory: {} },
+// Dummy data for preview
+const PREVIEW_DATA = {
+  userName: "mota jaan",
+  type: "monthly-report",
+  data: {
+    month: "December",
+    stats: {
+      totalIncome: 5000,
+      totalExpenses: 3500,
+      byCategory: {
+        housing: 1500,
+        groceries: 600,
+        transportation: 400,
+        entertainment: 300,
+        utilities: 700,
+      },
+    },
+    insights: [
+      "Your housing expenses are 43% of your total spending - consider reviewing your housing costs.",
+      "Great job keeping entertainment expenses under control this month!",
+      "Setting up automatic savings could help you save 20% more of your income.",
+    ],
   },
+};
+
+function EmailTemplate({
+  userName = PREVIEW_DATA.userName,
+  type = PREVIEW_DATA.type,
+  data = PREVIEW_DATA.data,
 }) {
   if (type === "monthly-report") {
     return (
@@ -31,25 +53,25 @@ export default function EmailTemplate({
               Here&rsquo;s your financial summary for {data?.month}:
             </Text>
 
+            {/* Main Stats */}
             <Section style={styles.statsContainer}>
               <div style={styles.stat}>
                 <Text style={styles.text}>Total Income</Text>
-                <Text style={styles.heading}>${data?.stats?.totalIncome ?? "N/A"}</Text>
+                <Text style={styles.heading}>${data?.stats?.totalIncome}</Text>
               </div>
               <div style={styles.stat}>
                 <Text style={styles.text}>Total Expenses</Text>
-                <Text style={styles.heading}>${data?.stats?.totalExpenses ?? "N/A"}</Text>
+                <Text style={styles.heading}>${data?.stats?.totalExpenses}</Text>
               </div>
               <div style={styles.stat}>
                 <Text style={styles.text}>Net</Text>
                 <Text style={styles.heading}>
-                  {data?.stats?.totalIncome && data?.stats?.totalExpenses
-                    ? `$${data.stats.totalIncome - data.stats.totalExpenses}`
-                    : "N/A"}
+                  ${data?.stats?.totalIncome - data?.stats?.totalExpenses}
                 </Text>
               </div>
             </Section>
 
+            {/* Category Breakdown */}
             {data?.stats?.byCategory && (
               <Section style={styles.section}>
                 <Heading style={styles.heading}>Expenses by Category</Heading>
@@ -61,6 +83,18 @@ export default function EmailTemplate({
                     </div>
                   )
                 )}
+              </Section>
+            )}
+
+            {/* AI Insights */}
+            {data?.insights && (
+              <Section style={styles.section}>
+                <Heading style={styles.heading}>Welth Insights</Heading>
+                {data.insights.map((insight, index) => (
+                  <Text key={index} style={styles.text}>
+                    • {insight}
+                  </Text>
+                ))}
               </Section>
             )}
 
@@ -84,30 +118,25 @@ export default function EmailTemplate({
             <Heading style={styles.title}>Budget Alert</Heading>
             <Text style={styles.text}>Hello {userName},</Text>
             <Text style={styles.text}>
-              You&rsquo;ve used {data?.percentageUsed?.toFixed(1) ?? "N/A"}% of your
+              You&rsquo;ve used {data?.percentageUsed?.toFixed(1)}% of your
               monthly budget.
             </Text>
             <Section style={styles.statsContainer}>
               <div style={styles.stat}>
                 <Text style={styles.text}>Budget Amount</Text>
-                <Text style={styles.heading}>${data?.budgetAmount ?? "N/A"}</Text>
+                <Text style={styles.heading}>${data?.budgetAmount}</Text>
               </div>
               <div style={styles.stat}>
                 <Text style={styles.text}>Spent So Far</Text>
-                <Text style={styles.heading}>${data?.totalExpenses ?? "N/A"}</Text>
+                <Text style={styles.heading}>${data?.totalExpenses}</Text>
               </div>
               <div style={styles.stat}>
                 <Text style={styles.text}>Remaining</Text>
                 <Text style={styles.heading}>
-                  {data?.budgetAmount && data?.totalExpenses
-                    ? `$${data.budgetAmount - data.totalExpenses}`
-                    : "N/A"}
+                  ${data?.budgetAmount - data?.totalExpenses}
                 </Text>
               </div>
             </Section>
-            <Text style={styles.footer}>
-              Review your expenses and adjust your spending to stay on track.
-            </Text>
           </Container>
         </Body>
       </Html>
@@ -116,6 +145,11 @@ export default function EmailTemplate({
 
   return null;
 }
+
+// 👇 Enable Preview Rendering in React Email
+EmailTemplate.PreviewProps = PREVIEW_DATA;
+
+export default EmailTemplate;
 
 const styles = {
   body: {

@@ -5,7 +5,7 @@ import { Plus } from "lucide-react";
 import { AccountCard } from "./_components/account-card";
 import { BudgetProgress } from "./_components/budget-progress";
 import { getCurrentBudget } from "@/actions/budget";
-
+import { DashboardOverview } from "./_components/transaction-overview";
 export default async function DashboardPage() {
   const [accounts, transactions] = await Promise.all([
     getUserAccounts(),
@@ -32,7 +32,11 @@ export default async function DashboardPage() {
         currentExpenses={budgetData?.currentExpenses || 0}
       />
       {/* Dashboard Overview */}
-     
+       <DashboardOverview
+        accounts={accounts}
+        transactions={transactions || []}
+      />
+
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {/* Add New Account */}
