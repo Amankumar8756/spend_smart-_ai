@@ -29,7 +29,8 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
     error,
   } = useFetch(updateBudget);
 
-  const percentUsed = budgetAmount > 0 ? (currentExpenses / budgetAmount) * 100 : 0;
+  const rawPercent = budgetAmount > 0 ? (currentExpenses / budgetAmount) * 100 : 0;
+  const percentUsed = Math.min(rawPercent, 100); // capped at 100 for progress bar
 
   const handleUpdateBudget = async () => {
     const amount = parseFloat(newBudget);
@@ -121,6 +122,11 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
           <p className="text-xs text-muted-foreground text-right">
             {percentUsed.toFixed(1)}% used
           </p>
+          {rawPercent > 100 && (
+            <p className="text-xs text-red-500 text-right">
+              You’ve spent {rawPercent.toFixed(1)}% of your budget!
+            </p>
+          )}
         </div>
       </CardContent>
     </Card>

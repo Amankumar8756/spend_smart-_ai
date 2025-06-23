@@ -11,7 +11,7 @@ import {
 
 // Dummy data for preview
 const PREVIEW_DATA = {
-  userName: "mota jaan",
+  userName: "Aman",
   type: "monthly-report",
   data: {
     month: "December",

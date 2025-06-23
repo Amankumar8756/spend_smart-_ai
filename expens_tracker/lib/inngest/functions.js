@@ -233,17 +233,16 @@ export const checkBudgetAlerts = inngest.createFunction(
 
     for (const budget of budgets) {
       const defaultAccount = budget.user.accounts[0];
-      if (!defaultAccount) continue; // Skip if no default account
+      if (!defaultAccount) continue;
 
       await step.run(`check-budget-${budget.id}`, async () => {
         const startDate = new Date();
         startDate.setDate(1); // Start of current month
 
-        // Calculate total expenses for the default account only
         const expenses = await db.transaction.aggregate({
           where: {
             userId: budget.userId,
-            accountId: defaultAccount.id, // Only consider default account
+            accountId: defaultAccount.id,
             type: "EXPENSE",
             date: {
               gte: startDate,
@@ -258,11 +257,13 @@ export const checkBudgetAlerts = inngest.createFunction(
         const budgetAmount = budget.amount;
         const percentageUsed = (totalExpenses / budgetAmount) * 100;
 
-        // Check if we should send an alert
+        // ✅ Fixed: Alert again at 100% regardless of month
         if (
-          percentageUsed >= 80 && // Default threshold of 80%
-          (!budget.lastAlertSent ||
-            isNewMonth(new Date(budget.lastAlertSent), new Date()))
+          percentageUsed >= 100 || 
+          (
+            percentageUsed >= 80 &&
+            (!budget.lastAlertSent || isNewMonth(new Date(budget.lastAlertSent), new Date()))
+          )
         ) {
           await sendEmail({
             to: budget.user.email,
@@ -279,7 +280,6 @@ export const checkBudgetAlerts = inngest.createFunction(
             }),
           });
 
-          // Update last alert sent
           await db.budget.update({
             where: { id: budget.id },
             data: { lastAlertSent: new Date() },
@@ -289,6 +289,7 @@ export const checkBudgetAlerts = inngest.createFunction(
     }
   }
 );
+
 
 function isNewMonth(lastAlertDate, currentDate) {
   return (
