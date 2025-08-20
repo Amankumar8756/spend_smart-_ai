@@ -7,7 +7,7 @@ import { Toaster } from "sonner";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Expence_Tracker_Using_AI",
+  title: "Expense_Tracker_Using_AI",
   description: "One stop Finance Platform",
 };
 
@@ -16,13 +16,12 @@ export default function RootLayout({ children }) {
     <ClerkProvider>
       <html lang="en">
         <head>
-          {/* <link rel="icon" href="/logo-sm.png" sizes="any" /> */}
+          {/* You can add favicon here if needed */}
         </head>
-        <body className={`${inter.className}`}>
+        <body className={inter.className}>
           <Header />
           <main className="min-h-screen">{children}</main>
-           <Toaster richColors />
-
+          <Toaster richColors />
           <footer className="bg-blue-50 py-12">
             <div className="container mx-auto px-4 text-center text-gray-600">
               <p>Made with 💗 by AmanCoder</p>
